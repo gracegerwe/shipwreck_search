@@ -14,7 +14,7 @@ export default function Home() {
     setResult(null);
 
     try {
-      const res = await fetch(`http://localhost:8000/wiki-summary?query=${encodeURIComponent(query)}`);
+      const res = await fetch(`https://shipwreck-backend.onrender.com/wiki-summary?query=${encodeURIComponent(query)}`);
       const data = await res.json();
 
       if (data.error) {
