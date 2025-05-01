@@ -23,7 +23,6 @@ app.add_middleware(
 WIKI_API_URL = "https://en.wikipedia.org/w/api.php"
 
 @app.get("/wiki-summary")
-@app.get("/wiki-summary")
 def get_wiki_summary(query: str = Query(..., description="Shipwreck or topic name")):
     search_params = {
         "action": "query",
