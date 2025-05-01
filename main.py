@@ -1,7 +1,24 @@
 from fastapi import FastAPI, Query
 import requests
+from fastapi.middleware.cors import CORSMiddleware
+from supabase import create_client, Client
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 🔓 allow all (change later if needed)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 WIKI_API_URL = "https://en.wikipedia.org/w/api.php"
 
@@ -38,6 +55,13 @@ def get_wiki_summary(query: str = Query(..., description="Shipwreck or topic nam
         summary = page.get("extract", "")
 
         if "may refer to:" not in summary.lower():
+
+            supabase.table("search_logs").insert({
+                "query": query,
+                "title": title,
+                "summary": summary
+            }).execute()
+
             return {
                 "query": query,
                 "title": title,
